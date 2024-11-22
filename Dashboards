@@ -1,0 +1,306 @@
+import 'package:flutter/material.dart';
+import 'loginscreen.dart';
+import 'activity_one.dart';  // Import ActivityOne.dart
+
+void main() {
+  runApp(Dashboard());
+}
+
+class Dashboard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: DashboardHome(),
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+        scaffoldBackgroundColor: Colors.white,
+      ),
+    );
+  }
+}
+
+class DashboardHome extends StatefulWidget {
+  @override
+  State<DashboardHome> createState() => _DashboardHomeState();
+}
+
+class _DashboardHomeState extends State<DashboardHome> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _screens = [
+    HomeScreen(),
+    ContactsScreen(),
+    SettingsScreen(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  void _logout(BuildContext context) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: Drawer(
+        child: Column(
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text(
+                "Michael Jude Garde",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              accountEmail: Text("BS in Information Technology"),
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: AssetImage('assets/avatar.png'),
+              ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.green, Colors.lightGreen],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.person, color: Colors.green),
+              title: Text("List of Users"),
+              onTap: () {
+                // Placeholder, no navigation yet
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.photo_album, color: Colors.green),
+              title: Text("Album"),
+              onTap: () {
+                // Placeholder, no navigation yet
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.logout, color: Colors.green),
+              title: Text("Logout"),
+              onTap: () => _logout(context),
+            ),
+          ],
+        ),
+      ),
+      appBar: AppBar(
+        title: Text("Dashboard"),
+        centerTitle: true,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.contacts),
+            label: 'Contacts',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+        selectedItemColor: Colors.green,
+        unselectedItemColor: Colors.grey,
+      ),
+      body: _screens[_selectedIndex],
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircleAvatar(
+            radius: 80.0,
+            backgroundImage: AssetImage('assets/avatar.png'),
+          ),
+          SizedBox(height: 20),
+          Text(
+            "Michael Jude Garde",
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            "Bachelor of Science in Information Technology",
+            style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+          ),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              // Navigate to ActivityOne
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ActivityOne()),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              backgroundColor: Colors.green,
+            ),
+            child: Text(
+              'Go to Activity One',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ContactsScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            icon: Icon(Icons.add_circle, size: 40, color: Colors.green),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AddContactDialog();
+                },
+              );
+            },
+          ),
+          Text(
+            'Add New Contact',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Dialog for adding a new contact
+class AddContactDialog extends StatefulWidget {
+  @override
+  _AddContactDialogState createState() => _AddContactDialogState();
+}
+
+class _AddContactDialogState extends State<AddContactDialog> {
+  final _formKey = GlobalKey<FormState>();
+  String firstName = '', lastName = '', contactNumber = '';
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text("Add New Contact"),
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              decoration: InputDecoration(labelText: 'First Name'),
+              onSaved: (value) {
+                firstName = value!;
+              },
+            ),
+            TextFormField(
+              decoration: InputDecoration(labelText: 'Last Name'),
+              onSaved: (value) {
+                lastName = value!;
+              },
+            ),
+            TextFormField(
+              decoration: InputDecoration(labelText: 'Contact Number'),
+              onSaved: (value) {
+                contactNumber = value!;
+              },
+              keyboardType: TextInputType.phone,
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              _formKey.currentState!.save();
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Contact added successfully')));
+            }
+          },
+          child: Text('Save'),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text('Cancel'),
+        ),
+      ],
+    );
+  }
+}
+
+class SettingsScreen extends StatefulWidget {
+  @override
+  _SettingsScreenState createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  double _fontSize = 16.0;
+  bool _isDarkMode = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Adjust Font Size',
+            style: TextStyle(fontSize: _fontSize),
+          ),
+          Slider(
+            value: _fontSize,
+            min: 10.0,
+            max: 30.0,
+            onChanged: (double value) {
+              setState(() {
+                _fontSize = value;
+              });
+            },
+          ),
+          SwitchListTile(
+            title: Text('Dark Mode'),
+            value: _isDarkMode,
+            onChanged: (bool value) {
+              setState(() {
+                _isDarkMode = value;
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(_isDarkMode ? 'Dark mode enabled' : 'Light mode enabled'),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}

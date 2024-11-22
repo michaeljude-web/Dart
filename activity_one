@@ -1,0 +1,114 @@
+import 'package:flutter/material.dart';
+import 'dashboard.dart';
+
+class ActivityOne extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: ActivityOneHome(),
+    );
+  }
+}
+
+class ActivityOneHome extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.green,  // Set the background color
+      appBar: AppBar(
+        title: Text('Activity One'),
+        backgroundColor: Colors.green,  // Match the app bar with the background color
+      ),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            // User account drawer header with an image, name, and email
+            UserAccountsDrawerHeader(
+              accountName: Text(
+                "RIO C. TIGTIG",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              accountEmail: Text("BS in Information Technology"),
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: AssetImage('assets/avatar.png'), // Add your avatar image here
+              ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.green, Colors.lightGreen],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+            ),
+            // Drawer items with navigation
+            ListTile(
+              leading: Icon(Icons.home, color: Colors.green),
+              title: Text("Home"),
+              onTap: () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => ActivityOneHome()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.dashboard, color: Colors.green),
+              title: Text("Dashboard"),
+              onTap: () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => Dashboard()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.logout, color: Colors.green),
+              title: Text("Logout"),
+              onTap: () {
+                // Add logout functionality here
+                Navigator.of(context).pop();  // Close the drawer
+              },
+            ),
+          ],
+        ),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'RIO C. TIGTIG',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (BuildContext context) => Dashboard()),
+                );
+              },
+              child: Text('To Dashboard'),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          final snackBar = SnackBar(
+            content: const Text('Hello World!'),
+            action: SnackBarAction(
+              label: 'Undo',
+              onPressed: () {
+                // Some code to undo the change
+              },
+            ),
+          );
+
+          // Find the ScaffoldMessenger in the widget tree
+          // and use it to show the SnackBar.
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+}

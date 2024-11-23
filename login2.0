@@ -1,0 +1,155 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter/material.dart';
+import 'package:garde/dashboard.dart';
+import 'package:garde/signup.dart';
+
+class LoginScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return LoginScreenHome();
+  }
+}
+
+class LoginScreenHome extends StatefulWidget {
+  @override
+  State<LoginScreenHome> createState() => _LoginScreenHomeState();
+}
+
+class _LoginScreenHomeState extends State<LoginScreenHome> {
+  var usernameController = TextEditingController();
+  var passwordController = TextEditingController();
+  bool _isPasswordVisible = false;
+
+
+  void checkInput() {
+    if (usernameController.text.isEmpty) {
+      showErrorDialog("Username is empty");
+    } else if (passwordController.text.isEmpty) {
+      showErrorDialog("Password is empty");
+    } else {
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (BuildContext context) => Dashboard()),
+      );
+    }
+  }
+
+  void showErrorDialog(String message) {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.error,
+      title: 'Error',
+      desc: message,
+      btnOkOnPress: () {},
+      width: 500,
+    ).show();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('SEAIT VLE'),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (BuildContext context) => Dashboard()),
+            );
+          },
+          icon: Icon(Icons.arrow_back),
+        ),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: SizedBox(
+            width: 400,
+            child: Card(
+              elevation: 8.0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Text(
+                      "Login to Seait VLE",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                  // Username Field
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: TextField(
+                      controller: usernameController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: "Username",
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: TextField(
+                      controller: passwordController,
+                      obscureText: !_isPasswordVisible,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: "Password",
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+              
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: SizedBox(
+                      height: 40.0,
+                      width: MediaQuery.of(context).size.width / 1.2,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.lightGreen,
+                        ),
+                        onPressed: () {
+                          checkInput();
+                        },
+                        child: Text('Login'),
+                      ),
+                    ),
+                  ),
+                  // Register Option
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("No account?"),
+                      TextButton(
+                        
+                        onPressed: () {
+                      
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (BuildContext context) => SignUpScreen()),
+                          );
+                        },
+                        child: Text("Click Here"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
